@@ -36,6 +36,16 @@ st.title("🌡️ PAC Stats")
 # Chargement des données
 try:
     df = load_data()
+    latest = df.iloc[-1]
+
+    # Valeurs actuelles en entête
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("T° extérieure", f"{latest['temp_out']:.1f}°C")
+    col2.metric("T° intérieure", f"{latest['temp_in']:.1f}°C")
+    col3.metric("Eau cible", f"{latest['water_target']:.1f}°C")
+    col4.metric("Eau réelle", f"{latest['water_avg']:.1f}°C")
+
+    st.divider()
 
     # Graphique à double axe Y
     fig = make_subplots(specs=[[{"secondary_y": True}]])
