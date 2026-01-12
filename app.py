@@ -42,21 +42,21 @@ try:
 
     # Axe gauche : Températures air (intérieur / extérieur)
     fig.add_trace(
-        go.Scatter(x=df['timestamp'], y=df['temp_in'], name="T° intérieure", line=dict(color="#FF6B6B")),
+        go.Scatter(x=df['timestamp'], y=df['temp_out'], name="T° extérieure", line=dict(color="#FF8C00")),
         secondary_y=False
     )
     fig.add_trace(
-        go.Scatter(x=df['timestamp'], y=df['temp_out'], name="T° extérieure", line=dict(color="#4ECDC4")),
+        go.Scatter(x=df['timestamp'], y=df['temp_in'], name="T° intérieure", line=dict(color="#FFD700")),
         secondary_y=False
     )
 
     # Axe droit : Températures eau (cible / réelle)
     fig.add_trace(
-        go.Scatter(x=df['timestamp'], y=df['water_target'], name="Eau cible", line=dict(color="#FFE66D", dash="dash")),
+        go.Scatter(x=df['timestamp'], y=df['water_target'], name="Eau cible", line=dict(color="#00008B", dash="dash")),
         secondary_y=True
     )
     fig.add_trace(
-        go.Scatter(x=df['timestamp'], y=df['water_avg'], name="Eau réelle", line=dict(color="#F7B731")),
+        go.Scatter(x=df['timestamp'], y=df['water_avg'], name="Eau réelle", line=dict(color="#87CEEB")),
         secondary_y=True
     )
 
