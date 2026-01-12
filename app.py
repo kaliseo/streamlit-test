@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from supabase import create_client
 
 # Configuration page
@@ -36,27 +37,41 @@ st.title("🌡️ PAC Stats")
 try:
     df = load_data()
 
-    # Graphique températures
-    fig1 = px.line(
-        df,
-        x='timestamp',
-        y=['temp_in', 'water_avg'],
-        title="Températures",
-        labels={'value': 'Température (°C)', 'timestamp': 'Date/Heure', 'variable': 'Mesure'}
-    )
-    fig1.update_layout(hovermode='x unified')
-    st.plotly_chart(fig1, use_container_width=True)
+    # Graphique à double axe Y
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-    # Graphique loi d'eau
-    fig2 = px.line(
-        df,
-        x='timestamp',
-        y=['law_min', 'law_max'],
-        title="Loi d'eau",
-        labels={'value': 'Température (°C)', 'timestamp': 'Date/Heure', 'variable': 'Limite'}
+    # Axe gauche : Températures air (intérieur / extérieur)
+    fig.add_trace(
+        go.Scatter(x=df['timestamp'], y=df['temp_in'], name="T° intérieure", line=dict(color="#FF6B6B")),
+        secondary_y=False
     )
-    fig2.update_layout(hovermode='x unified')
-    st.plotly_chart(fig2, use_container_width=True)
+    fig.add_trace(
+        go.Scatter(x=df['timestamp'], y=df['temp_out'], name="T° extérieure", line=dict(color="#4ECDC4")),
+        secondary_y=False
+    )
+
+    # Axe droit : Températures eau (cible / réelle)
+    fig.add_trace(
+        go.Scatter(x=df['timestamp'], y=df['water_target'], name="Eau cible", line=dict(color="#FFE66D", dash="dash")),
+        secondary_y=True
+    )
+    fig.add_trace(
+        go.Scatter(x=df['timestamp'], y=df['water_avg'], name="Eau réelle", line=dict(color="#F7B731")),
+        secondary_y=True
+    )
+
+    # Configuration des axes
+    fig.update_xaxes(title_text="Date/Heure")
+    fig.update_yaxes(title_text="T° air (°C)", secondary_y=False)
+    fig.update_yaxes(title_text="T° eau (°C)", secondary_y=True)
+
+    fig.update_layout(
+        title="Températures PAC",
+        hovermode="x unified",
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
 
 except Exception as e:
     st.error(f"Erreur: {e}")
