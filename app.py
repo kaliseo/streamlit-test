@@ -38,14 +38,8 @@ try:
     df = load_data()
     latest = df.iloc[-1]
 
-    # Valeurs actuelles en entête
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("T° extérieure", f"{latest['temp_out']:.1f}°C")
-    col2.metric("T° intérieure", f"{latest['temp_in']:.1f}°C")
-    col3.metric("Eau cible", f"{latest['water_target']:.1f}°C")
-    col4.metric("Eau réelle", f"{latest['water_avg']:.1f}°C")
-
-    st.divider()
+    # Valeurs actuelles en entête (une ligne)
+    st.markdown(f"**Extérieur:** {latest['temp_out']:.1f}°C · **Intérieur:** {latest['temp_in']:.1f}°C · **Eau cible:** {latest['water_target']:.1f}°C · **Eau réelle:** {latest['water_avg']:.1f}°C")
 
     # Graphique à double axe Y
     fig = make_subplots(specs=[[{"secondary_y": True}]])
@@ -62,7 +56,7 @@ try:
 
     # Axe droit : Températures eau (cible / réelle)
     fig.add_trace(
-        go.Scatter(x=df['timestamp'], y=df['water_target'], name="Eau cible", line=dict(color="#00008B", dash="dash")),
+        go.Scatter(x=df['timestamp'], y=df['water_target'], name="Eau cible", line=dict(color="#2ECC71")),
         secondary_y=True
     )
     fig.add_trace(
